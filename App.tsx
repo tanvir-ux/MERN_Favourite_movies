@@ -47,6 +47,7 @@ export default function App() {
       <pre>
         {randomUserDataJSON}
       </pre>
+      <p>{randomUserDataJSON} </p>
     </div>
   );
 }
