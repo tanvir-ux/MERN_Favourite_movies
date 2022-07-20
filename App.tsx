@@ -7,7 +7,7 @@ import './style.css';
 
 export default function App() {
   const {useState, useEffect} = React;
-  const [counter, setCounter] = useState(0);
+  const [counter, setCounter] = useState(1);
   const [randomUserDataJSON, setRandomUserDataJSON] = useState('');
   const [userInfos, setUserInfos] = useState<any>([]);
   const [nextPageNumber, setNextPageNumber] = useState(1);
@@ -63,6 +63,7 @@ export default function App() {
         ...userInfos,
         ...response.results,
       ]
+      setCounter(newUserInfos.length);
       setUserInfos(newUserInfos.reverse());
       setNextPageNumber(response.info.page + 1);
       
@@ -75,8 +76,8 @@ export default function App() {
 
   return (
     <div>
-      <h1>Counter: {counter}</h1>
-      <button onClick={increase}>Increase Counter</button><br/>
+      <h1>Total Users: {counter}</h1>
+      
       <button onClick={fetchNextUser}>Fetch Next User</button>
 
       {
