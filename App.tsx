@@ -10,6 +10,7 @@ export default function App() {
   const [counter, setCounter] = useState(0);
   const [randomUserDataJSON, setRandomUserDataJSON] = useState('');
   const [userInfos, setUserInfos] = useState<any>([]);
+  const [nextPageNumber, setNextPageNumber] = useState(1);
 
   interface UserName {
     first: string;
@@ -33,11 +34,11 @@ export default function App() {
     setCounter(counter + 1);
   }
 
-  const url = 'https://randomuser.me/api/';
+  const url = 'https://randomuser.me/api';
 
-  const fetchRandomData = () => {
+  const fetchRandomData = (nextPageNumber) => {
     return axios
-    .get(url)
+    .get(`${url}?page=${nextPageNumber}`)
     .then(({data}) => {
       // handle success
       console.log(data);
@@ -54,19 +55,29 @@ export default function App() {
     return `${title} ${first} ${last}`;
   }
 
-  useEffect(() => {
-    fetchRandomData().then(response => {
+  const fetchNextUser = () => {
+    fetchRandomData(nextPageNumber).then(response => {
       setRandomUserDataJSON(JSON.stringify(response, null, 2) || 'Nothing found ');
-      setUserInfos(response.results)
+      const newUserInfos = [
+        ...userInfos,
+        ...response.results,
+      ]
+      setUserInfos(newUserInfos);
+      setNextPageNumber(response.info.page + 1);
       
-    })
+    });
+  }
+
+  useEffect(() => {
+    fetchNextUser();
   }, [])
 
   return (
     <div>
       <h1>Counter: {counter}</h1>
       <button onClick={increase}>Increase Counter</button><br/>
-      <button onClick={fetchRandomData}>Fetch Random Data</button>
+      <button onClick={fetchNextUser}>Fetch Next User</button>
+
       {
         userInfos.map((userInfo: UserInfo, idx: number) => (
           <div key = {idx}>
@@ -76,10 +87,7 @@ export default function App() {
         ))
       }
 
-      <pre>
-        {randomUserDataJSON}
-      </pre>
-      <p>{randomUserDataJSON} </p>
+      
     </div>
   );
 }
