@@ -58,11 +58,12 @@ export default function App() {
   const fetchNextUser = () => {
     fetchRandomData(nextPageNumber).then(response => {
       setRandomUserDataJSON(JSON.stringify(response, null, 2) || 'Nothing found ');
+      if(response === undefined) return;
       const newUserInfos = [
         ...userInfos,
         ...response.results,
       ]
-      setUserInfos(newUserInfos);
+      setUserInfos(newUserInfos.reverse());
       setNextPageNumber(response.info.page + 1);
       
     });
