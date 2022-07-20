@@ -17,9 +17,16 @@ export default function App() {
     title: string;
   }
 
+  interface UserPicture {
+    thumbnail: string;
+  }
+
   interface UserInfo {
     name: UserName;
+    picture: UserPicture;
   }
+
+
  
 
   const increase = () => {
@@ -64,7 +71,7 @@ export default function App() {
         userInfos.map((userInfo: UserInfo, idx: number) => (
           <div key = {idx}>
             <p> {getFullUserName(userInfo)} </p>
-            { /* img */}
+            <img src={userInfo.picture.thumbnail}/>
           </div>
         ))
       }
