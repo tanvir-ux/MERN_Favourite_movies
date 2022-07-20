@@ -6,8 +6,11 @@ import './style.css';
 
 
 export default function App() {
-  const {useState} = React;
+  const {useState, useEffect} = React;
   const [counter, setCounter] = useState(0);
+  const [randomUserDataJSON, setRandomUserDataJSON] = useState('');
+
+ 
 
   const increase = () => {
     setCounter(counter + 1);
@@ -16,11 +19,12 @@ export default function App() {
   const url = 'https://randomuser.me/api/';
 
   const fetchRandomData = () => {
-    axios.get(url)
-    .then((res) => {
+    return axios
+    .get(url)
+    .then(({data}) => {
       // handle success
-      console.log(res);
-      return res;
+      console.log(data);
+      return JSON.stringify(data, null, 2);
     })
     .catch( (error) => {
       // handle error
@@ -28,11 +32,21 @@ export default function App() {
     })
   }
 
+  useEffect(() => {
+    fetchRandomData().then(response => {
+      setRandomUserDataJSON(response || 'Nothing found ');
+      
+    })
+  }, [])
+
   return (
     <div>
       <h1>Counter: {counter}</h1>
       <button onClick={increase}>Increase Counter</button><br/>
       <button onClick={fetchRandomData}>Fetch Random Data</button>
+      <pre>
+        {randomUserDataJSON}
+      </pre>
     </div>
   );
 }
