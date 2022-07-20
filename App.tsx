@@ -9,7 +9,17 @@ export default function App() {
   const {useState, useEffect} = React;
   const [counter, setCounter] = useState(0);
   const [randomUserDataJSON, setRandomUserDataJSON] = useState('');
+  const [userInfos, setUserInfos] = useState<any>([]);
 
+  interface UserName {
+    first: string;
+    last: string;
+    title: string;
+  }
+
+  interface UserInfo {
+    name: UserName;
+  }
  
 
   const increase = () => {
@@ -24,7 +34,7 @@ export default function App() {
     .then(({data}) => {
       // handle success
       console.log(data);
-      return JSON.stringify(data, null, 2);
+      return data;
     })
     .catch( (error) => {
       // handle error
@@ -32,9 +42,15 @@ export default function App() {
     })
   }
 
+  const getFullUserName = (userInfo: UserInfo) => {
+    const {name: {first, last, title}} = userInfo;
+    return `${title} ${first} ${last}`;
+  }
+
   useEffect(() => {
     fetchRandomData().then(response => {
-      setRandomUserDataJSON(response || 'Nothing found ');
+      setRandomUserDataJSON(JSON.stringify(response, null, 2) || 'Nothing found ');
+      setUserInfos(response.results)
       
     })
   }, [])
@@ -44,6 +60,15 @@ export default function App() {
       <h1>Counter: {counter}</h1>
       <button onClick={increase}>Increase Counter</button><br/>
       <button onClick={fetchRandomData}>Fetch Random Data</button>
+      {
+        userInfos.map((userInfo: UserInfo, idx: number) => (
+          <div key = {idx}>
+            <p> {getFullUserName(userInfo)} </p>
+            { /* img */}
+          </div>
+        ))
+      }
+
       <pre>
         {randomUserDataJSON}
       </pre>
